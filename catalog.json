@@ -89,6 +89,7 @@
       "base": "https://raw.githubusercontent.com/lantlos269/sd-plugins/main/weather/",
       "files": [
         "manifest.json",
+        "device.json",
         "plugin.js",
         "README.md"
       ]

@@ -1,0 +1,32 @@
+{
+  "title": "Weather",
+  "description": "Today's hourly forecast for your saved location, browsed on the device.",
+  "config": {
+    "file": "/.crosspoint/weather.json"
+  },
+  "browse": {
+    "format": "json",
+    "url": "https://wttr.in/~{cfg.lat},{cfg.lon}?format=j1",
+    "method": "GET",
+    "headers": {
+      "User-Agent": "curl/8"
+    },
+    "items": "weather.0.hourly",
+    "fields": {
+      "title": "weatherDesc.0.value",
+      "author": "tempC",
+      "id": "time"
+    },
+    "page_size": 8
+  },
+  "download": {
+    "url": "https://wttr.in/~{cfg.lat},{cfg.lon}?format=j1",
+    "method": "GET",
+    "headers": {
+      "User-Agent": "curl/8"
+    },
+    "dest_dir": "/Weather",
+    "filename": "forecast-{id}.json"
+  },
+  "version": "1.0.0"
+}
