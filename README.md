@@ -62,6 +62,10 @@ Reconnect to the device web UI; the plugin's card appears on its page. A
   conversion). Enter server URL + API client + login in the web page; the
   reader signs in silently (OAuth2 password grant) and downloads articles.
   Works with self-hosted Wallabag or app.wallabag.it.
+- `weather/` — a Settings plugin: look up a city with Open-Meteo's free
+  geocoding API, save it, and show current conditions (temperature, feels
+  like, humidity, wind) from Open-Meteo's forecast API. No API key or
+  account needed, so nothing secret lives in the plugin folder.
 - `protected-content/` — a File Manager plugin that connects the reader to a
   protected-content provider, using the device relay + crypto. It detects an
   existing `/.crosspoint/content.key`, restores its fulfillment session, and lists

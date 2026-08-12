@@ -82,6 +82,18 @@
       ]
     },
     {
+      "name": "weather",
+      "title": "Weather",
+      "description": "Show the current weather for a saved location.",
+      "version": "1.0.0",
+      "base": "https://raw.githubusercontent.com/lantlos269/sd-plugins/main/weather/",
+      "files": [
+        "manifest.json",
+        "plugin.js",
+        "README.md"
+      ]
+    },
+    {
       "name": "webdav",
       "title": "WebDAV",
       "description": "Browse and download books from a WebDAV server (Nextcloud, Koofr, ...).",
