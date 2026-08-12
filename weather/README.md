@@ -26,5 +26,8 @@ Tap **Clear** on the web card, or delete `/.crosspoint/weather.json`.
 
 - Only the current conditions are shown (temperature, feels-like, humidity,
   wind, and a short description) — no forecast history.
-- This is a browser-side card only; it has no on-device screen under
-  Settings → System → Plugins.
+- This plugin has no `device.json`, so it shows up under Settings → System →
+  Plugins with this description as usage instructions, but has no **Open**
+  action there. To see live weather, join the reader's network and open
+  `crosspoint.local` in a browser (phone or computer) → **Settings** → the
+  Weather card.
