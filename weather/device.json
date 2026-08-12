@@ -13,7 +13,7 @@
     },
     "items": "weather.0.hourly",
     "fields": {
-      "title": "weatherDesc.0.value",
+      "title": "time",
       "author": "tempC",
       "id": "time"
     },

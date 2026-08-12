@@ -24,13 +24,17 @@ on the reader itself under Settings → System → Plugins.
 
 1. On the reader, go to **Settings → System → Plugins → Weather → Open**.
 2. Browse today's hourly forecast (powered by [wttr.in](https://wttr.in), no
-   account needed) — each row shows a short description and the temperature
-   for that hour.
+   account needed) — each row shows the hour and the temperature for that
+   hour. The hour is in raw 24h form without a colon (`0` = 00:00, `300` =
+   03:00, `1200` = 12:00, `2100` = 21:00); rows are already in chronological
+   order top to bottom.
 3. Press Confirm on a row to save a snapshot of the full forecast as JSON to
    `/Weather/` on the SD card.
 
-This on-device view always shows Celsius (the on-device catalog format can't
-compute a Fahrenheit conversion); switch units only affects the web card.
+This on-device view always shows Celsius and has no weather description or
+icon — the on-device catalog format can only show two raw values per row, no
+formatting or unit conversion. For feels-like, humidity, wind, a
+description, and a Celsius/Fahrenheit choice, use the web card.
 
 ## Clear
 
