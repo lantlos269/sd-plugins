@@ -1,0 +1,6 @@
+{
+  "title": "Weather",
+  "mount": "settings",
+  "description": "Show the current weather for a saved location.",
+  "version": "1.0.0"
+}

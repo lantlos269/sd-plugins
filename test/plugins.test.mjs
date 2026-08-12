@@ -117,7 +117,7 @@ class TinyDomParser {
 }
 
 test('all plugin manifests satisfy the manifest contract', async () => {
-  const plugins = ['hello', 'organize-by-author', 'protected-content'];
+  const plugins = ['hello', 'organize-by-author', 'protected-content', 'weather'];
   for (const plugin of plugins) {
     const manifest = JSON.parse(await readFile(new URL(plugin + '/manifest.json', root), 'utf8'));
     assert.equal(typeof manifest.title, 'string', plugin + ' needs a title');
@@ -355,4 +355,77 @@ test('protected content restores content.key, writes rights first, and fulfills 
   assert.equal(savedCredential, credentialAfterActivation);
   assert.deepEqual(deletes, ['/Loans/library-loan.acsm']);
   assert.match(reloadedDocument.elements['lib-status'].textContent, /Fetched “Test Book”/);
+});
+
+function fakeWeatherDocument(ids) {
+  const elements = Object.fromEntries(ids.map((id) => [id, {
+    id,
+    value: '',
+    textContent: '',
+    innerHTML: '',
+    style: {},
+    onclick: null,
+    onchange: null,
+  }]));
+  return {
+    elements,
+    getElementById(id) {
+      assert.ok(elements[id], 'unexpected element lookup: ' + id);
+      return elements[id];
+    },
+  };
+}
+
+test('weather geocodes a city, saves it, and renders current conditions', async () => {
+  const document = fakeWeatherDocument([
+    'wx-status', 'wx-city', 'wx-unit', 'wx-search', 'wx-refresh', 'wx-clear', 'wx-result',
+  ]);
+  const writes = [];
+  const api = {
+    async writeFile(path, data) {
+      writes.push({ path, data });
+      return { ok: true, bytes: data.length };
+    },
+    async relay(method, url) {
+      if (url.startsWith('https://geocoding-api.open-meteo.com/')) {
+        return { status: 200, headers: [], body: JSON.stringify({
+          results: [{ name: 'Berlin', admin1: 'Berlin', country: 'Germany', latitude: 52.52, longitude: 13.41 }],
+        }) };
+      }
+      if (url.startsWith('https://api.open-meteo.com/')) {
+        return { status: 200, headers: [], body: JSON.stringify({
+          current_units: {
+            temperature_2m: '°C', apparent_temperature: '°C',
+            relative_humidity_2m: '%', wind_speed_10m: 'km/h',
+          },
+          current: {
+            time: '2026-08-12T12:00', temperature_2m: 21.4, apparent_temperature: 20.1,
+            relative_humidity_2m: 55, weather_code: 1, wind_speed_10m: 12.3,
+          },
+        }) };
+      }
+      throw new Error('unexpected relay: ' + url);
+    },
+  };
+  async function fetch(url) {
+    if (url.startsWith('/download')) return response({ status: 404 });
+    throw new Error('unexpected fetch: ' + url);
+  }
+
+  const { render } = await loadPlugin('weather/plugin.js', { document, fetch });
+  await render({ innerHTML: '' }, api);
+  assert.match(document.elements['wx-status'].textContent, /Not configured yet/);
+
+  document.elements['wx-city'].value = 'Berlin';
+  document.elements['wx-unit'].value = 'celsius';
+  await document.elements['wx-search'].onclick();
+
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0].path, '/.crosspoint/weather.json');
+  const saved = JSON.parse(Buffer.from(writes[0].data, 'base64').toString('utf8'));
+  assert.equal(saved.name, 'Berlin');
+  assert.equal(saved.lat, 52.52);
+  assert.equal(saved.unit, 'celsius');
+  assert.match(document.elements['wx-result'].innerHTML, /21\.4/);
+  assert.match(document.elements['wx-status'].textContent, /Berlin/);
 });
